@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); //user model 
-const {Blog} = require('../models/blog'); //Blog Model
-const {Comment} = require('../models/blog');//Comment Model
+const { Blog } = require('../models/blog'); //Blog Model
+const { Comment } = require('../models/blog');//Comment Model
 
 
 //specific user data
@@ -168,7 +168,7 @@ router.get('/getcomment/:id', async (req, res) => {
             const id = req.params.id;//here id shouldbe number
             const comment = await Comment.find({ blogid: id });
             console.log("Comment Data", comment);
-            if (comment.length>0) {
+            if (comment.length > 0) {
                 return res.send({
                     statusCode: 200,
                     message: 'Comments Found',
@@ -184,6 +184,55 @@ router.get('/getcomment/:id', async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
+});
+
+//update the blog
+router.put('/updateblog/:id', async (req, res) => {
+    try {
+        if (req.params.id) {
+            if (req.body) {
+                const id = req.params.id;//here id shouldbe number
+                if (!req.body.title && req.body.title == '') {
+                    return res.send({
+                        statusCode: 400,
+                        message: 'Title Mandatory and Not Empty',
+                    })
+                }
+                if (!req.body.description && req.body.description == '') {
+                    return res.send({
+                        statusCode: 400,
+                        message: 'Description Mandatory and Not Empty',
+                    })
+                }
+                if (!req.body.imageUrl && req.body.imageUrl == '') {
+                    return res.send({
+                        statusCode: 400,
+                        message: 'Imageurl Mandatory and Not Empty',
+                    })
+                }
+                const { title, description, createdby, imageUrl } = req.body;
+                const date = Date.now();
+                const updateData = await Blog.findOneAndUpdate({ id: id },
+                    { $set: { title, description, createdby, imageUrl, date } },
+                    { new: true }
+                );
+                if (updateData) {
+                    return res.send({
+                        statusCode: 200,
+                        message: 'Updated blog',
+                        data: [updateData]
+                    })
+                }
+                return res.send({
+                    statusCode: 400,
+                    message: 'Error During Update',
+                })
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+
 });
 
 

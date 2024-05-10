@@ -8,40 +8,40 @@ import { AppContext } from './appContext';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [credWrong,setCredWrong] = useState(false);
-    const [error,setError]= useState('');
+    const [credWrong, setCredWrong] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
-    const {setName} = useContext(AppContext);
+    const { setName } = useContext(AppContext);
 
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/login', { username,password });
-            console.log("resposne checking",response);
-            if(response!=undefined){
+            const response = await axios.post('http://localhost:5000/auth/login', { username, password });
+            console.log("resposne checking", response);
+            if (response != undefined) {
                 console.log("inside respose check");
-                if(response.data.statusCode == 200 && response.data.message == 'Login Successful'){
+                if (response.data.statusCode == 200 && response.data.message == 'Login Successful') {
                     setName(response.data.data.name);
                     // const data = {username : username}
                     // sessionStorage.setItem('user',JSON.stringify(data));
                     setUsername('');
                     setPassword('');
                     navigate('/home');
-                 }
-                 else{
+                }
+                else {
                     setUsername('');
                     setPassword('');
                     setCredWrong(true);
                 }
             }
-           
+
         } catch (error) {
             if (error.response.status === 401) {
                 setError('Bad request: The server could not process the request.');
-              } else {
+            } else {
                 setError('An error occurred while fetching data.');
-              }
+            }
         }
     };
 
@@ -51,8 +51,8 @@ const Login = () => {
             <div>
                 <form onSubmit={handleLogin}>
                     <Box display="flex" flexDirection={"column"}
-                     maxWidth={400} alignItems={'center'}
-                    justifyContent={'center'}
+                        maxWidth={400} alignItems={'center'}
+                        justifyContent={'center'}
                         margin={'auto'}
                         marginTop={5}
                         padding={3}
@@ -68,17 +68,17 @@ const Login = () => {
                         <TextField type={'text'} variant='outlined'
                             placeholder='Username'
                             margin='normal'
-                            onChange={(e)=>
-                                {setUsername(e.target.value)
-                                 setCredWrong(false);   
-                                }}
+                            onChange={(e) => {
+                                setUsername(e.target.value)
+                                setCredWrong(false);
+                            }}
                             value={username}
                             required={true}
                             autoFocus={true}
                         />
                         <TextField type={'password'} variant='outlined' placeholder='Password'
                             margin='normal'
-                            onChange={(e)=>setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             value={password}
                             required={true}
                         />
@@ -86,13 +86,13 @@ const Login = () => {
                             type='submit'
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             color='warning'
-                            
-                            >Login</Button>
-                            {credWrong ? <Typography
+
+                        >Login</Button>
+                        {credWrong ? <Typography
                             marginTop={3}
                             color={'red'}
-                            >Invalid Credentials</Typography>: ''}
-                            
+                        >Invalid Credentials</Typography> : ''}
+
                         <Button
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             onClick={() => navigate("/register")}
@@ -100,7 +100,7 @@ const Login = () => {
                     </Box>
                 </form>
             </div>
-            
+
         </div>
     );
 };

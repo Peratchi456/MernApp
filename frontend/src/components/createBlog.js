@@ -20,6 +20,7 @@ import Modal from '@mui/material/Modal';
 import { AppContext } from './appContext';
 
 
+//ModelCss
 const style = {
     position: 'absolute',
     top: '50%',
@@ -30,10 +31,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-  };
-
-
-
+};
 
 const CreateBlog = () => {
 
@@ -44,6 +42,7 @@ const CreateBlog = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState("");
+    const [fileSizeError, setFileSizeError] = useState(false);
     const [error, setError] = useState('');
 
 
@@ -51,10 +50,10 @@ const CreateBlog = () => {
     const [auth, setAuth] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
 
-     //modal
-     const [open, setOpen] = React.useState(false);
-     const handleOpen = () => setOpen(true);
-     const handleCloseModal = () => setOpen(false);
+    //modal
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleCloseModal = () => setOpen(false);
 
 
 
@@ -70,12 +69,14 @@ const CreateBlog = () => {
                 createdby: name,
                 imageUrl: file
             }
-            console.log("Form Data",formData);
+            console.log("Form Data", formData);
             const blogcreate = await axios.post('http://localhost:5000/api/createblog', formData);
-            console.log("Create API Resp",blogcreate);
-            if(blogcreate){
-                
-
+            console.log("Create API Resp", blogcreate);
+            if (blogcreate.data.statusCode == 200) {
+                setOpen(true);
+                setTitle('');
+                setDescription('');
+                setFile('');
             }
             // alert('Blog created successfully!');
             //after that open the model
@@ -89,18 +90,26 @@ const CreateBlog = () => {
     };
 
     function handleChangeFile(e) {
-        console.log("FILE Select",e.target.files);
-        var reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onload = ()=>{
-            console.log("imgbase",reader.result);
-            // console.log("image type",typeof(reader.result));
-            setFile(reader.result);
+        console.log("FILE Select", e.target.files);
+        const selectedFile = e.target.files[0];
+        const fileSizeInBytes = selectedFile.size;
+
+        if (Math.round(fileSizeInBytes / 1000) <= 41) {
+            setFileSizeError(false);
+            //old logic for image
+            var reader = new FileReader();
+            reader.readAsDataURL(e.target.files[0]);
+            reader.onload = () => {
+                console.log("imgbase", reader.result);
+                setFile(reader.result);
+            }
+            reader.onerror = error => {
+                console.log("Error during img conversion", error);
+            }
+        } else {
+            setFileSizeError(true);
         }
-        reader.onerror = error =>{
-            console.log("Error during img conversion",error);
-        }
-        // setFile(URL.createObjectURL(e.target.files[0]));
+
     }
 
     //AppBar
@@ -128,11 +137,11 @@ const CreateBlog = () => {
         console.log("BlogLink");
     }
 
-    const handleNavigate = () =>{
+    const handleNavigate = () => {
         navigate('/home');
     }
 
-    
+
 
     return (
         <>
@@ -204,19 +213,26 @@ const CreateBlog = () => {
                     >
                         <div>
                             <Typography>Choose Image</Typography>
-                            
+
                             <input type="file" onChange={handleChangeFile}
-                            required={true}
-                            ></input><br/>
+                                required={true}
+                            ></input>
+                            {fileSizeError ?
+                                <Typography color={'red'}
+                                    variant="caption" display="block" gutterBottom
+                                >Choose Only Images And Size Less Than 40kb</Typography> : ""
+                            }
+
+                            <br />
                             {
-                            file && file !=""?<img src={file} style={{ width: '40%', height: '40%',marginTop:'10px' }} />:""}
-                            
+                                file && file != "" ? <img src={file} style={{ width: '40%', height: '40%', marginTop: '10px' }} /> : ""}
+
                         </div>
                         <div style={{ float: "left", width: '100%' }}>
                             <Typography
-                            marginTop={'10px'}
+                                marginTop={'10px'}
                             >Title</Typography>
-                            <TextField type={'text'} 
+                            <TextField type={'text'}
                                 size="small"
                                 variant='outlined'
                                 placeholder='title'
@@ -226,9 +242,9 @@ const CreateBlog = () => {
                                 required={true}
                             />
                         </div>
-                        <div style={{ float: 'left',width:'100%'}}>
+                        <div style={{ float: 'left', width: '100%' }}>
                             <Typography
-                            marginBottom={'10px'}
+                                marginBottom={'10px'}
                             >Description</Typography>
 
                             <ReactQuill value={description}
@@ -243,6 +259,7 @@ const CreateBlog = () => {
                             type='submit'
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             color='warning'
+                            disabled={fileSizeError}
                         >Create Blog</Button>
                     </form>
                 </div>
@@ -257,14 +274,14 @@ const CreateBlog = () => {
                 >
                     <Box sx={style}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                           Blog Created Successfully
+                            Blog Created Successfully
                         </Typography>
 
                         <Button variant='contained'
                             type='submit'
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             color='success'
-                          onClick={handleNavigate}
+                            onClick={handleNavigate}
                         >OK</Button>
                     </Box>
                 </Modal>

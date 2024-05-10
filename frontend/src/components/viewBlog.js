@@ -125,6 +125,7 @@ const ViewBlog = () => {
 
         if (viewId != null) {
             setEditId(viewId);
+            navigate('/editblog');
         }
     }
 
@@ -139,7 +140,7 @@ const ViewBlog = () => {
                 }
                 const postComment = await axios.post('http://localhost:5000/api/createcomment', createComment);
                 console.log("Post Comment Response", postComment);
-                if(postComment.data.statCode == 200){
+                if (postComment.data.statCode == 200) {
                     e.preventDefault();
                     // alert('comment added successfully');
                 }
@@ -153,23 +154,6 @@ const ViewBlog = () => {
             }
         }
     }
-
-
-
-
-
-    //Stud data
-    // const blogData = [
-    //     {
-    //         id: 1,
-    //         title: "Sample Post",
-    //         description: "A blog (a truncation of weblog) is an informational website consisting of discrete, often informal diary-style text entries (posts)",
-    //         imageUrl: "./assets/pixel1.jpg",
-    //         createdBy: "Selvan",
-    //         date: new Date
-    //     }
-    // ]
-
 
     return (
         <div>
@@ -229,9 +213,9 @@ const ViewBlog = () => {
             {
                 viewData != {} ?
                     <div style={{ marginTop: '2%', marginLeft: '2%', marginBottom: '2%', marginRight: '2%' }}>
-                         <Typography
+                        <Typography
                             textAlign={'center'}
-                            variant="h3" gutterBottom
+                            variant="h4" gutterBottom
                         > View Blog</Typography>
                         <Typography
                             textAlign={'center'}
@@ -258,7 +242,7 @@ const ViewBlog = () => {
                         >
                             <Button variant="outlined"
                                 size="medium"
-                                onClick={handleEditBlogClick()}
+                                onClick={() => { handleEditBlogClick() }}
                             >Edit blog
                             </Button>
                         </div>
@@ -266,7 +250,7 @@ const ViewBlog = () => {
                             variant="h6" gutterBottom
                         >Comments</Typography>
                         <div>
-                            <form onClick={(e)=>handleCommentSubmit(e)}>
+                            <form onClick={(e) => handleCommentSubmit(e)}>
                                 <textarea
                                     required={true}
                                     value={comment}

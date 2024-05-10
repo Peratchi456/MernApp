@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppContext } from './appContext';
 
-import { Card, CardMedia, CardContent, Button } from '@mui/material';
+import { Card, CardMedia, CardContent, Button, TextField } from '@mui/material';
 
 import axios from 'axios';
 
@@ -22,14 +22,14 @@ const Home = () => {
 
     const [auth, setAuth] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { name,setViewId } = useContext(AppContext);
+    const { name, setViewId, setEditId } = useContext(AppContext);
     console.log("Name in ContextAPI", name);
 
     //Home State variable
     const [blogData, setBlogData] = useState([]);
     const [error, setError] = useState('');
 
-  
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -83,11 +83,18 @@ const Home = () => {
     }
 
     //Handling read more
-    const handleReadMore = (object) =>{
-        console.log("Object HandleReadMore",object);
+    const handleReadMore = (object) => {
+        console.log("Object HandleReadMore", object);
         setViewId(object);
         navigate('/viewblog');
     }
+
+    //Remove the HTMLTags in desc
+    function removeHtmlTags(input) {
+        return input.replace(/<[^>]*>/g, '');
+    }
+
+
 
     //data Stub
     // const blogData = [
@@ -117,6 +124,7 @@ const Home = () => {
                 <Box sx={{ flexGrow: 1 }}>
                     <AppBar position="static">
                         <Toolbar>
+
                             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}
                                 onClick={handleHomeLink}
                             >
@@ -179,7 +187,7 @@ const Home = () => {
                 {blogData.length > 0 ?
                     blogData.map((obj) => {
                         return (
-                            <div style={{ float: 'left', marginLeft: "10px" ,marginTop:'15px'}}>
+                            <div style={{ float: 'left', marginLeft: "10px", marginTop: '15px' }}>
                                 <Card
                                     sx={{ maxWidth: 345 }}
                                 >
@@ -196,8 +204,8 @@ const Home = () => {
                                         <div>
                                             <Typography variant="caption" gutterBottom style={{
                                                 fontWeight: 'bold'
-                                            }}>createdBy
-                                                {obj.createdBy}
+                                            }}>
+                                                {'createdBy' + ' ' + obj.createdby}
                                             </Typography>
                                             <Typography variant="caption" gutterBottom style={{ fontStyle: 'italic', marginLeft: '3px' }}>
                                                 {'Posted On' + '' + new Date(obj.date).toLocaleString()}
@@ -210,16 +218,17 @@ const Home = () => {
                                             textOverflow={'ellipsis'}
                                             whiteSpace={'nowrap'}
                                         >
-                                            {obj.description}
+                                            {removeHtmlTags(obj.description)}
                                         </Typography>
                                         <Button variant="outlined"
                                             color="primary"
                                             size='small'
                                             style={{ marginTop: '5px' }}
-                                            onClick={()=>{handleReadMore(obj.id)}}
+                                            onClick={() => { handleReadMore(obj.id) }}
                                         >
                                             Read More
                                         </Button>
+
                                     </CardContent>
                                 </Card>
                             </div>

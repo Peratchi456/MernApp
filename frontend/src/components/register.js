@@ -34,7 +34,7 @@ const Register = () => {
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
-      };
+    };
 
 
     const handleRegister = async (e) => {
@@ -68,9 +68,9 @@ const Register = () => {
         }
     };
 
-    const handleNavigate = async () =>{
-        if(open){
-        navigate('/');
+    const handleNavigate = async () => {
+        if (open) {
+            navigate('/');
         }
     }
 
@@ -150,7 +150,7 @@ const Register = () => {
                             type='submit'
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             color='success'
-                          onClick={handleNavigate}
+                            onClick={handleNavigate}
                         >OK</Button>
                     </Box>
                 </Modal>

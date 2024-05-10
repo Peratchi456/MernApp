@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const apiRoutes = require('./routes/apiRoutes');
@@ -9,6 +10,10 @@ const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Increase payload size limit using bodyParser
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use('/auth', authRoutes);
 app.use('/api',apiRoutes);
