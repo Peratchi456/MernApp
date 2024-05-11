@@ -14,7 +14,7 @@ const Register = () => {
     const [error, setError] = useState('');
 
     const [regcheck, setRegCheck] = useState(false);
-    const [regmodel, setRegModel] = useState(false);
+    // const [regmodel, setRegModel] = useState(false);
 
     //modal
     const [open, setOpen] = React.useState(false);
@@ -122,14 +122,17 @@ const Register = () => {
                             type='submit'
                             sx={{ marginTop: 3, borderRadius: 3 }}
                             color='warning'
-                        // onClick={setRegCheck(false)}
                         >Register</Button>
+
+                        <Button
+                            sx={{ marginTop: 3, borderRadius: 3 }}
+                            onClick={() => navigate("/")}
+                        >Login</Button>
 
                         {regcheck ? <Typography
                             marginTop={3}
                             color={'red'}
                         >User Already Exist</Typography> : ''}
-
                     </Box>
                 </form>
             </div>
